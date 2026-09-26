@@ -1,35 +1,30 @@
 {
   "schemaVersion": 2,
-  "title": "Issue trees \u2014 Coggle-style editor",
+  "title": "Issue trees \u2014 React Flow editor",
   "narrative": {
-    "overview": "Compact right-flow Markdown map using the user-pinned Coggle visual reference.",
+    "overview": "Substantial white nodes on an actual React Flow canvas. All branches grow right; text edits in place.",
     "keyCharacteristics": [
-      "Measured labels",
-      "Pastel branch baselines",
-      "Inline bold answers",
-      "Edit text in place",
-      "Explicit save"
+      "Padded rounded nodes",
+      "Neutral native connections",
+      "Readable overview",
+      "Explicit Markdown save"
     ]
   },
   "extensions": {
-    "fontFamily": "Helvetica Neue, Arial, sans-serif",
-    "canvas": "#fafafa",
-    "root": "#e2e4e4",
-    "branches": [
-      "#80cdb9",
-      "#bd99d5",
-      "#e6ae79",
-      "#7db4d2",
-      "#d79291",
-      "#b9c977"
-    ],
-    "connectors": {
-      "strokeWidths": [5, 3.5, 2.5]
+    "fontFamily": "system sans",
+    "canvas": "#f8f9fb",
+    "text": "#30323d",
+    "secondary": "#656a78",
+    "border": "#dedfe6",
+    "focus": "#8176ba",
+    "node": {
+      "width": 280,
+      "padding": "20px 22px",
+      "radius": 12
     },
     "spacing": {
-      "horizontal": 42,
-      "vertical": 14,
-      "maxNodeWidth": 240
+      "horizontal": 100,
+      "vertical": 24
     },
     "breakpoints": [760, 650]
   }

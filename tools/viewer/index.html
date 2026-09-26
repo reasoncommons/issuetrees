@@ -52,13 +52,16 @@
         tabindex="0"
         aria-label="Issue tree map. Click a question to edit. Drag the canvas to pan."
       >
-        <div id="world">
-          <svg id="connections" aria-hidden="true"></svg>
-          <div id="nodes"></div>
-        </div>
+        <div id="flow"></div>
       </div>
+      <div id="nodes" aria-hidden="true"></div>
       <div id="outline" hidden></div>
-      <div id="editor" hidden aria-label="Edit selected question in place">
+      <div
+        id="editor"
+        class="nowheel"
+        hidden
+        aria-label="Edit selected question in place"
+      >
         <form id="node-form">
           <textarea
             id="question"
@@ -146,7 +149,7 @@
           ><button id="fit">Fit</button><button id="overview">Collapse</button
           ><button id="expand">Expand</button>
         </div>
-        <span id="hint">Click to edit · Drag to pan · Scroll to zoom</span>
+        <span id="hint">Click text to edit · Drag canvas to pan</span>
         <div class="view-switch">
           <button id="map-view" aria-pressed="true">Map</button
           ><button id="outline-view" aria-pressed="false">Outline</button>

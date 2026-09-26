@@ -1,23 +1,25 @@
 # Design system: Issue trees
 
-The user-pinned reference is [Coggle](https://coggle.it/diagram/ap6V0aBnV6ueHVma/t/how-do-we-rebrand-seeds-of-renaissance). The updated [moodboard](tools/viewer/design/moodboard.html) replaces the earlier spacious, warm-paper direction following user feedback.
+## Visual authority
 
-## Composition
+The user explicitly rejected the thin Coggle-style labels and asked for the more substantial, elegant xyflow default look. The reference is the [React Flow feature overview](https://reactflow.dev/examples/overview). The application now uses actual React Flow and its default stylesheet with custom issue nodes. The earlier Coggle and inline-edit screenshots remain in the changelog.
 
-The root sits on the left and every branch grows right. Labels use their measured content width, up to 240px. Horizontal gaps are 42px; vertical gaps are 14px. Pastel curves join directly to label baselines, with strokes tapering from 5px to 3.5px to 2.5px. Direction is fixed even as content expands or is edited. Colour identifies families, not completion status.
+## Composition and nodes
 
-## Typography and palette
+All branches flow right from the root. The initial view shows first-level branches so text stays readable; deeper questions expand on demand. White 280px nodes have 20px vertical and 22px horizontal padding, 12px corners, a pale #dedfe6 border and a restrained downward shadow. The root is 300px with 24px padding. Horizontal gaps are 100px and vertical gaps 24px. Neutral 2px curved connections use native React Flow handles. This is a styled application of the library, not a claim of pixel-identical untouched defaults.
 
-Helvetica Neue / Arial; 13px questions, 12px bold answers, 14px root. Answers are inline beneath their questions with a two-line preview and a separate expansion control. Canvas #fafafa; text #42464a; root #e2e4e4. Branches: mint #80cdb9, lilac #bd99d5, apricot #e6ae79, blue #7db4d2, rose #d79291, olive #b9c977. Darker corresponding text colours preserve readability. No remote fonts.
+## Typography and colour
 
-## Controls and editing
+System sans. Questions use 15px/1.5 at weight 550; root 18px/1.45 at 600. Answers use 13px/1.55 regular grey, beneath the question with 12px separation. Canvas #f8f9fb with sparse #d8dbe2 dots. Text #30323d, secondary #656a78. Selection/focus uses restrained violet #8176ba. Save is dark neutral. No coloured branch baselines or coloured question text remain in the map.
 
-A 58px header holds document status, undo/redo, input, Markdown preview, download, and Save. Navigation sits quietly at the bottom. Selecting question or answer text replaces the label with an autosizing input in that exact node. Enter/Done finishes, Shift-Enter adds a line, and Escape cancels. Branch actions use a compact disclosure alongside the text. The selected node pans into view at a readable scale. Changes remain in memory until explicit Save. Invalid edits retain the draft; Cancel discards it. While saving, mutations are locked. Keyboard focus is visible; the outline root is a real button.
+## Interaction
 
-## Responsive behaviour
+React Flow owns pan/zoom, connections, handles and controls. Node text enters an autosizing in-place editor. Enter/Done finishes, Shift-Enter adds a line, Escape cancels. Node-local Branch actions expose structural edits. Explicit Save retains the original conflict checks. Node placement remains automatic; free dragging and drag-to-reparent semantics are a future decision. Native canvas attribution remains visible.
 
-The toolbar wraps below 760px. Below 650px the document initially opens as an outline, and editing stays within the selected outline item. The map remains available. Long trees require zoom, folding, or outline reading rather than tiny fit-to-screen text.
+Keyboard focus returns to the editable article after finishing. Canvas wrappers and edges do not introduce dead-end tab stops; focus rings are visible. Scrolling inside the editor does not zoom the canvas. Text inputs and sanitized rich Markdown stay owned by the existing document controller and are mounted into custom React Flow node components.
 
-## Critique and verification
+## Responsive behaviour and review
 
-The original prototype used too much space and looked insufficiently like Coggle. This direction removes answer cards, the serif root, dotted paper, fixed node widths, and large column gaps. Independent review accepted the visual direction and identified two editing risks: losing rejected drafts and edits during asynchronous saves. Both were fixed and browser-verified before shipping. The next revision fixes flow to the right and removes the separate form in response to user feedback. Review caught detached textarea measurement and a view-switch draft placement issue; both were fixed and verified. Structural moves still use a parent selector; xyflow is a candidate for future dragging.
+A 72px desktop header carries document controls; mobile wraps at 760px. Below 650px the outline opens initially. At 390px the inline editor fits within the document without horizontal overflow.
+
+Independent review confirmed the substantial visual direction and checked interaction integration. Focus-return and textarea-wheel regressions were fixed; save/reopen, rejected drafts, multiline sizing, keyboard re-entry and mobile were browser-verified. Remaining limitation: large expanded trees need pan/zoom or outline; initial overview deliberately folds descendants.

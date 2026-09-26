@@ -2,182 +2,129 @@
 <html lang="en">
   <meta charset="utf-8" /><meta
     name="viewport"
-    content="width=device-width, initial-scale=1"
-  /><title>Issue trees · Coggle direction</title>
-  <style>
+    content="width=device-width,initial-scale=1"
+  /><title>Issue trees · React Flow direction</title
+  ><style>
     * {
       box-sizing: border-box;
     }
     body {
       margin: 0;
-      background: #fafafa;
-      color: #42464a;
+      background: #f8f9fb;
+      color: #30323d;
       font:
-        15px/1.5 "Helvetica Neue",
-        Arial,
+        15px/1.6 system-ui,
         sans-serif;
     }
     main {
-      max-width: 1200px;
+      max-width: 1160px;
       margin: auto;
       padding: 48px 24px;
     }
-    header {
-      border-bottom: 1px solid #e3e5e6;
-      padding-bottom: 24px;
-    }
     h1 {
       font-size: 36px;
-      letter-spacing: -1px;
-      margin: 8px 0;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      margin: 0 0 16px;
     }
     h2 {
       font-size: 20px;
       margin: 0 0 12px;
     }
     p {
-      max-width: 740px;
+      max-width: 720px;
     }
     a {
-      color: #395c73;
+      color: #67578d;
     }
     section {
       margin-top: 36px;
     }
-    .grid {
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid #dedfe6;
+    }
+    .columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 40px;
     }
-    .swatches {
-      display: flex;
-      gap: 8px;
+    .sample {
+      max-width: 280px;
+      padding: 20px 22px;
+      background: white;
+      border: 1px solid #dedfe6;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px #2526310b;
+      font-weight: 550;
     }
-    .swatches span {
-      height: 36px;
-      flex: 1;
-      border-radius: 3px;
-    }
-    .root {
-      display: inline-block;
-      background: #e2e4e4;
-      padding: 9px 12px;
-      font-size: 14px;
-    }
-    .label {
-      font-size: 13px;
-      border-bottom: 3px solid #80cdb9;
-      max-width: 240px;
-      padding: 10px 4px 6px;
-    }
-    .label strong {
+    .sample span {
       display: block;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-    img {
-      width: 100%;
-      height: auto;
-      border: 1px solid #e3e5e6;
-    }
-    small {
-      color: #71787c;
+      font-size: 13px;
+      font-weight: 400;
+      color: #656a78;
+      margin-top: 12px;
     }
     footer {
-      border-top: 1px solid #e3e5e6;
       margin-top: 40px;
       padding-top: 20px;
+      border-top: 1px solid #dedfe6;
     }
     @media (max-width: 650px) {
-      .grid {
+      .columns {
         grid-template-columns: 1fr;
-      }
-      h1 {
-        font-size: 28px;
       }
     }
   </style>
   <main>
-    <header>
-      <small>DESIGN FIELD NOTES · REVISION 03 · 26 SEPTEMBER 2026</small>
-      <h1>Make room for the whole inquiry.</h1>
-      <p>
-        A close Coggle visual direction: compact labels, flowing pastel
-        branches, and a small central question. Markdown remains the document;
-        the map becomes a place to work.
-      </p>
-      <a
-        href="https://coggle.it/diagram/ap6V0aBnV6ueHVma/t/how-do-we-rebrand-seeds-of-renaissance"
-        >User’s Coggle reference ↗</a
-      >
-    </header>
+    <h1>More room for the thinking.</h1>
+    <p>
+      The new reference is React Flow: substantial white nodes, readable type,
+      soft corners, and a calm canvas. This replaces the thin coloured branches
+      the user rejected.
+    </p>
+    <a href="https://reactflow.dev/examples/overview">React Flow reference ↗</a>
     <section>
-      <h2>Composition in use</h2>
       <img
-        src="inline-map.png"
-        alt="The rebrand issue tree, with a grey root and compact coloured branches growing right with editing in place"
-      /><small
-        >Implemented composition using the Life Itself rebrand sample. The
-        previous serif root, answer cards and wide columns were rejected as too
-        spacious.</small
-      >
+        src="xyflow-map.png"
+        alt="A right-flow issue tree with padded white rounded nodes on the React Flow canvas"
+      />
     </section>
-    <section class="grid">
+    <section class="columns">
       <div>
-        <h2>Pastel branches, plain canvas</h2>
-        <div class="swatches">
-          <span style="background: #80cdb9"></span
-          ><span style="background: #bd99d5"></span
-          ><span style="background: #e6ae79"></span
-          ><span style="background: #7db4d2"></span
-          ><span style="background: #d79291"></span
-          ><span style="background: #b9c977"></span>
-        </div>
-        <p>
-          Colour distinguishes branch families. Darker text carries the same
-          family tone. Curves taper with depth and continue beneath labels.
-        </p>
-      </div>
-      <div>
-        <h2>Small type, clear hierarchy</h2>
-        <div class="root">What are we trying to answer?</div>
-        <div class="label">
-          Who is this for?<strong
-            >People working with Markdown issue trees.</strong
+        <h2>A node with substance</h2>
+        <div class="sample">
+          What are we trying to understand?<span
+            >Questions and answers have their own rhythm, with enough space for
+            each to be read.</span
           >
         </div>
         <p>
-          Helvetica Neue / Arial. Root 14px; questions 13px; bold answers 12px.
-          Content determines width, capped at 240px.
-        </p>
-      </div>
-    </section>
-    <section class="grid">
-      <div>
-        <h2>Editing stays deliberate</h2>
-        <p>
-          Select a question or answer and edit directly on its branch. Enter
-          finishes, Escape cancels, and Save writes Markdown. Undo works across
-          structural edits and saves. A changed source file stops a save rather
-          than being silently overwritten.
+          280px width · 20/22px padding · 12px corners. Questions 15px; answers
+          13px. Neutral connections and small native handles.
         </p>
       </div>
       <div>
-        <h2>Critique → refinements</h2>
+        <h2>Direct manipulation of text</h2>
         <p>
-          Compactness must not erase context: keep every branch flowing right and edit text in its own node. Long answers expand independently.
-          Mobile starts in an outline.
+          Click the text and type where it stands. Enter finishes, Escape
+          cancels. Save explicitly writes Markdown. The opening overview folds
+          deeper branches to preserve reading size.
         </p>
+        <h2>Critique and result</h2>
         <p>
-          Review exposed draft loss on rejected edits and a race during saves.
-          Preserve invalid drafts and lock mutations until saves finish. Final
-          independent review: no remaining blockers.
+          The previous version treated xyflow as a future library and missed the
+          visual request. This version uses it now. Independent review accepted
+          the new proportions and appearance; keyboard focus and textarea
+          scrolling issues were fixed.
         </p>
       </div>
     </section>
     <footer>
-      <a href="../index.html">Open the prototype →</a> · Explicit saves; no live
-      synchronization.
+      <a href="../index.html">Open the prototype →</a> · Previous screenshots
+      remain in the changelog.
     </footer>
   </main>
 </html>

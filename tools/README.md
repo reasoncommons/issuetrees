@@ -2,7 +2,7 @@
 
 ## Working editor prototype
 
-The [Markdown editor](viewer/README.md) now provides a compact Coggle-style map, question/answer editing, branch restructuring, undo/redo, and explicit Save back to a local file. Run `cd tools/viewer && npm ci && npm run build && npm start -- /absolute/path/to/project.md`. It includes a rebrand sample and an updated [design moodboard](viewer/design/moodboard.html). Current work is tracked in Beads `issuetrees-yx3`; the brief below records the original discovery context.
+The [Markdown editor](viewer/README.md) now provides a React Flow canvas with substantial nodes and editing in place, question/answer editing, branch restructuring, undo/redo, and explicit Save back to a local file. Run `cd tools/viewer && npm ci && npm run build && npm start -- /absolute/path/to/project.md`. It includes a rebrand sample and an updated [design moodboard](viewer/design/moodboard.html). Current work is tracked in Beads `issuetrees-803`; the brief below records the original discovery context.
 
 Tools and skills for visualising and editing issue trees: combine Coggle's visual intuitiveness, a spreadsheet's structured information, and the freedom to write detailed descriptions and answers.
 

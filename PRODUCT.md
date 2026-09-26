@@ -3,7 +3,7 @@
 ## Platform
 Local web application with optional Node file server.
 ## Stack
-JavaScript, Vite, Markdown AST, DOMPurify; static browser mode also supported.
+JavaScript, Vite, React Flow canvas, Markdown AST, DOMPurify; static browser mode also supported.
 ## Users
 Rufus and Life Itself collaborators working with project issue trees in Markdown.
 ## Product Purpose
@@ -11,7 +11,7 @@ See the structure of an inquiry and edit its questions, answers, and branches wi
 ## Capabilities and Constraints
 Compact right-flow map and outline with editing in place. Edit, add, delete, reparent, reorder, undo/redo. Explicit Save back to the opened file with optimistic conflict detection; no live synchronization. Preserve surrounding project context. Unsupported Markdown structures remain read-only or edits are rejected without losing drafts.
 ## Brand Commitments
-Coggle is the user-pinned visual reference: compact labels, pastel curved branches, plain canvas, quiet controls. Obsidian remains a later integration option.
+React Flow is now the user-pinned visual reference: substantial padded white nodes, rounded corners, calm canvas and native navigation. Right-flow and editing in place remain required. Obsidian remains a later integration option.
 ## Evidence on Hand
 Life Itself rebrand sample; actual Coggle reference; desktop/mobile screenshots and browser save/reopen/conflict checks.
 ## Product Principles

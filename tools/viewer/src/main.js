@@ -1,3 +1,4 @@
+import { createFlowCanvas } from "./flow-canvas.jsx";
 import "./style.css";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
@@ -41,8 +42,18 @@ let doc,
   saving = false,
   baseUrl = "";
 const viewport = $("#viewport"),
-  world = $("#world"),
   editor = $("#editor");
+const canvas = createFlowCanvas($("#flow"), {
+  onViewport: (v) => {
+    tx = v.x;
+    ty = v.y;
+    scale = v.zoom;
+    $("#zoom").textContent = Math.round(scale * 100) + "%";
+  },
+  onPaneClick: () => {
+    if (selected) finishEditing();
+  },
+});
 const clone = (x) => structuredClone(x);
 const dirty = () => JSON.stringify(doc.tree) !== savedTree;
 function notice(message) {
@@ -234,8 +245,12 @@ function finishEditing() {
   selected = null;
   editor.hidden = true;
   render(id);
-  const scope = view === "map" ? $("#nodes") : $("#outline");
-  scope.querySelector(`[data-id="${id}"]`)?.focus({ preventScroll: true });
+  const scope = view === "map" ? $("#flow") : $("#outline");
+  scope
+    .querySelector(
+      view === "map" ? `.node[data-id="${id}"]` : `[data-id="${id}"]`,
+    )
+    ?.focus({ preventScroll: true });
   updateStatus();
 }
 function sizeDraft() {
@@ -264,7 +279,7 @@ function content(n) {
       e.stopPropagation();
       answers.has(n.id) ? answers.delete(n.id) : answers.add(n.id);
       render(n.id);
-      const scope = view === "map" ? $("#nodes") : $("#outline");
+      const scope = view === "map" ? $("#flow") : $("#outline");
       scope
         .querySelector(`[data-answer="${n.id}"]`)
         ?.focus({ preventScroll: true });
@@ -313,6 +328,7 @@ function render(anchor) {
     el.dataset.id = n.id;
     el.tabIndex = 0;
     el.setAttribute("aria-label", "Edit: " + plainLabel(actual));
+    el.classList.add("nodrag", "nopan");
     el.style.setProperty("--branch", palette[branch % palette.length][0]);
     el.style.setProperty("--ink", palette[branch % palette.length][1]);
     if (selected === n.id && view === "map" && !editor.hidden) {
@@ -320,6 +336,7 @@ function render(anchor) {
       el.append(editor);
     } else el.append(content(actual));
     el.onclick = (e) => {
+      e.stopPropagation();
       if (!e.target.closest("a,button,#editor"))
         selectNode(n.id, e.target.closest(".answer") ? "answer" : "question");
     };
@@ -350,7 +367,7 @@ function render(anchor) {
         }
         collapsed.has(n.id) ? collapsed.delete(n.id) : collapsed.add(n.id);
         render(n.id);
-        $("#nodes")
+        $("#flow")
           .querySelector(`[data-id="${n.id}"] .fold`)
           ?.focus({ preventScroll: true });
       };
@@ -359,42 +376,13 @@ function render(anchor) {
     $("#nodes").append(el);
     if (el.contains(editor)) sizeDraft();
     measureAnswers(el);
-    sizes.set(n.id, { width: el.offsetWidth, height: el.offsetHeight });
+    sizes.set(n.id, { width: el.offsetWidth + 2, height: el.offsetHeight + 2 });
     elements.set(n.id, el);
     n.children.forEach((c, i) => mount(c, n.id === "root" ? i : branch));
   }
   mount(shown);
-  layout = layoutTree(shown, sizes);
-  for (const n of layout.nodes) {
-    const el = elements.get(n.id);
-    el.style.left = n.x + "px";
-    el.style.top = n.y + "px";
-    el.classList.toggle("left", n.side === -1);
-  }
-  const svg = $("#connections");
-  svg.replaceChildren();
-  svg.setAttribute("width", "1");
-  svg.setAttribute("height", "1");
-  for (const { from, to } of layout.edges) {
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path"),
-      side = to.side;
-    const x1 = side === 1 ? from.x + from.width : from.x,
-      y1 = from.id === "root" ? from.y + from.height / 2 : from.y + from.height;
-    const x2 = side === 1 ? to.x : to.x + to.width,
-      y2 = to.y + to.height;
-    const end = side === 1 ? to.x + to.width : to.x;
-    const curve = Math.max(22, Math.abs(x2 - x1) * 0.55);
-    path.setAttribute(
-      "d",
-      `M ${x1} ${y1} C ${x1 + side * curve} ${y1}, ${x2 - side * curve} ${y2}, ${x2} ${y2} L ${end} ${y2}`,
-    );
-    path.setAttribute("stroke", palette[to.branch % palette.length][0]);
-    path.setAttribute(
-      "stroke-width",
-      to.depth === 1 ? "5" : to.depth === 2 ? "3.5" : "2.5",
-    );
-    svg.append(path);
-  }
+  layout = layoutTree(shown, sizes, { gapX: 100, gapY: 24 });
+  canvas.update(layout, elements, selected);
   if (before) {
     const after = layout.nodes.find((n) => n.id === anchor);
     if (after) {
@@ -458,19 +446,11 @@ function renderOutline() {
   }
 }
 function transform() {
-  world.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+  canvas.setViewport({ x: tx, y: ty, zoom: scale });
   $("#zoom").textContent = Math.round(scale * 100) + "%";
 }
 function fit() {
-  const w = viewport.clientWidth,
-    h = viewport.clientHeight;
-  scale = Math.min(
-    1.05,
-    Math.max(0.2, Math.min((w - 90) / layout.width, (h - 110) / layout.height)),
-  );
-  tx = (w - layout.width * scale) / 2 - layout.minX * scale;
-  ty = (h - 45 - layout.height * scale) / 2 - layout.minY * scale;
-  transform();
+  canvas.fit();
 }
 function setView(next) {
   if (selected) {
@@ -486,7 +466,7 @@ function setView(next) {
   render();
   if (view === "map") fit();
 }
-function resetDepth(depth = 2) {
+function resetDepth(depth = 1) {
   collapsed.clear();
   function walk(n, d) {
     if (d >= depth && n.children.length) collapsed.add(n.id);
@@ -784,39 +764,6 @@ function zoom(
 }
 $("#zoom-in").onclick = () => zoom(1.2);
 $("#zoom-out").onclick = () => zoom(1 / 1.2);
-let drag = null;
-viewport.onpointerdown = (e) => {
-  if (e.target.closest(".node")) return;
-  if (selected) {
-    finishEditing();
-    if (selected) return;
-  }
-  drag = { x: e.clientX, y: e.clientY, tx, ty };
-  viewport.setPointerCapture(e.pointerId);
-};
-viewport.onpointermove = (e) => {
-  if (drag) {
-    tx = drag.tx + e.clientX - drag.x;
-    ty = drag.ty + e.clientY - drag.y;
-    transform();
-  }
-};
-viewport.onpointerup = viewport.onpointercancel = () => (drag = null);
-viewport.addEventListener(
-  "wheel",
-  (e) => {
-    if (e.target.closest(".node") && e.target.closest("textarea")) return;
-    e.preventDefault();
-    const r = viewport.getBoundingClientRect();
-    if (e.shiftKey) {
-      tx -= e.deltaX || e.deltaY;
-      ty -= e.deltaX ? e.deltaY : 0;
-      transform();
-    } else
-      zoom(Math.exp(-e.deltaY * 0.003), e.clientX - r.left, e.clientY - r.top);
-  },
-  { passive: false },
-);
 viewport.onkeydown = (e) => {
   if (e.target !== viewport) return;
   const d = {
