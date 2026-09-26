@@ -56,7 +56,7 @@ test("layout keeps unequal-height sibling subtrees apart", () => {
     ["b", 100],
     ["c", 50],
   ]);
-  const result = layoutTree(root, sizes);
+  const result = layoutTree(root, sizes, { bilateral: false, gapY: 32 });
   const a = result.nodes.find((n) => n.id === "a"),
     b = result.nodes.find((n) => n.id === "b");
   assert.ok(b.y >= a.y + 300 + 24);

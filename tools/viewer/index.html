@@ -3,57 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#f8f7f3" />
-    <title>Issue Trees — a little room to think</title>
+    <meta name="theme-color" content="#fafafa" />
+    <title>Issue Trees</title>
   </head>
   <body>
     <header>
-      <a class="brand" href="./" aria-label="Issue Trees home"
-        ><svg viewBox="0 0 32 32" aria-hidden="true">
-          <path d="M5 16h8m0 0c6 0 3-9 13-9m-13 9h13m-13 0c6 0 3 9 13 9" /></svg
-        >Issue Trees</a
-      ><span class="tagline">A little room to think.</span>
-      <nav aria-label="Document">
-        <button id="sample">Rebrand example</button
-        ><button id="paste-toggle">Paste Markdown</button
-        ><button class="primary" id="open">
-          Open a file <span aria-hidden="true">↗</span></button
-        ><input
-          id="file"
-          type="file"
-          accept=".md,.markdown,.txt,text/plain"
-          hidden
-        />
-      </nav>
-    </header>
-    <section id="import" hidden>
-      <label for="markdown">Your Markdown tree</label
-      ><textarea
-        id="markdown"
-        spellcheck="false"
-        placeholder="- What are we trying to understand?&#10;  - What do we know? **✅ An answer goes here.**"
-      ></textarea>
-      <div>
-        <button class="primary" id="render">View tree</button
-        ><button id="cancel">Cancel</button><span>Stays in your browser.</span>
+      <a class="brand" href="./">issue trees</a>
+      <div class="document">
+        <span id="document-name">Seeds of Renaissance</span
+        ><span id="save-state" role="status">Example · edit a copy</span>
       </div>
-    </section>
-    <div id="notice" role="status" hidden></div>
+      <nav aria-label="Document controls">
+        <button id="undo" title="Undo (⌘/Ctrl Z)" aria-label="Undo" disabled>
+          <svg viewBox="0 0 20 20">
+            <path d="M7 4 3 8l4 4M3 8h8a5 5 0 0 1 0 10" />
+          </svg></button
+        ><button
+          id="redo"
+          title="Redo (⌘/Ctrl Shift Z)"
+          aria-label="Redo"
+          disabled
+        >
+          <svg viewBox="0 0 20 20">
+            <path d="m13 4 4 4-4 4m4-4H9a5 5 0 0 0 0 10" />
+          </svg></button
+        ><span class="separator"></span><button id="open">Open Markdown</button
+        ><button id="paste-toggle">Paste</button
+        ><button id="source-toggle">Markdown</button
+        ><button
+          id="download"
+          title="Download a Markdown copy"
+          aria-label="Download Markdown"
+        >
+          <svg viewBox="0 0 20 20">
+            <path d="M10 2v11m-4-4 4 4 4-4M3 14v4h14v-4" />
+          </svg></button
+        ><button id="save" class="save" disabled>Save</button>
+      </nav>
+      <input type="file" id="file" accept=".md,.markdown,.txt" hidden />
+    </header>
+    <div id="notice" role="alert" hidden>
+      <span></span
+      ><button id="dismiss-notice" aria-label="Dismiss message">×</button>
+    </div>
     <main>
-      <section class="context">
-        <div>
-          <h1 id="document-name">Seeds of Renaissance</h1>
-          <p id="summary"></p>
-        </div>
-        <div class="view-switch" aria-label="View">
-          <button id="map-view" aria-pressed="true">Map</button
-          ><button id="outline-view" aria-pressed="false">Outline</button>
-        </div>
-      </section>
       <div
         id="viewport"
         tabindex="0"
-        aria-label="Issue tree map. Drag empty space to pan. Use zoom controls to change scale."
+        aria-label="Issue tree map. Click a question to edit. Drag the canvas to pan."
       >
         <div id="world">
           <svg id="connections" aria-hidden="true"></svg>
@@ -61,20 +58,88 @@
         </div>
       </div>
       <div id="outline" hidden></div>
-      <footer>
-        <div class="map-controls">
+      <aside id="editor" hidden aria-label="Edit selected question">
+        <div class="panel-heading">
+          <h2>Edit question</h2>
+          <button id="close-editor" aria-label="Close editor">×</button>
+        </div>
+        <form id="node-form">
+          <label for="question">Question</label
+          ><textarea id="question" rows="3" required></textarea>
+          <div id="answer-fields">
+            <label for="answer"
+              >Answer <span>optional · Markdown supported</span></label
+            ><textarea
+              id="answer"
+              rows="4"
+              placeholder="What do we know?"
+            ></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="apply">Apply</button
+            ><button type="button" id="cancel-edit">Cancel</button>
+            <span id="draft-state"></span>
+          </div>
+        </form>
+        <div class="structure">
+          <button id="add-child">+ Child question</button
+          ><button id="add-sibling">+ Sibling</button
+          ><label for="parent">Move to branch</label
+          ><select id="parent"></select>
+          <div class="row">
+            <button id="move-up">Move up</button
+            ><button id="move-down">Move down</button
+            ><button id="delete" class="danger">Delete branch</button>
+          </div>
+          <p class="subtle">
+            Changes stay here until you Save. Deletions can be undone.
+          </p>
+        </div>
+      </aside>
+      <section id="import" class="sheet" hidden>
+        <div class="panel-heading">
+          <h2>Paste Markdown</h2>
+          <button id="cancel-import" aria-label="Close import">×</button>
+        </div>
+        <label for="markdown"
+          >A list, or a project with an Issue tree section</label
+        ><textarea
+          id="markdown"
+          rows="12"
+          placeholder="- What are we trying to understand?&#10;  - What do we know? **✅ An answer.**"
+        ></textarea
+        ><button id="load-paste" class="apply">Open tree</button>
+      </section>
+      <section id="source-panel" class="sheet" hidden>
+        <div class="panel-heading">
+          <h2>Markdown to save</h2>
+          <button id="close-source" aria-label="Close Markdown preview">
+            ×
+          </button>
+        </div>
+        <p>The full document, including unchanged project context.</p>
+        <textarea
+          id="source"
+          readonly
+          rows="15"
+          aria-label="Markdown preview"
+        ></textarea
+        ><button id="copy-source">Copy Markdown</button>
+      </section>
+      <div class="bottom-bar">
+        <div class="zoom-controls">
           <button id="zoom-out" aria-label="Zoom out">−</button
           ><output id="zoom">100%</output
           ><button id="zoom-in" aria-label="Zoom in">+</button
-          ><span class="divider"></span><button id="fit">Fit</button
-          ><button id="overview">Overview</button
-          ><button id="expand">Expand all</button>
+          ><button id="fit">Fit</button><button id="overview">Collapse</button
+          ><button id="expand">Expand</button>
         </div>
-        <p id="hint">Drag to explore · Select a branch to unfold it</p>
-        <a href="./design/moodboard.html" target="_blank" rel="noopener"
-          >Design notes ↗</a
-        >
-      </footer>
+        <span id="hint">Click to edit · Drag to pan · Scroll to zoom</span>
+        <div class="view-switch">
+          <button id="map-view" aria-pressed="true">Map</button
+          ><button id="outline-view" aria-pressed="false">Outline</button>
+        </div>
+      </div>
     </main>
     <script type="module" src="/src/main.js"></script>
   </body>

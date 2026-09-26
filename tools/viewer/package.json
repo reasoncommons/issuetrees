@@ -1,12 +1,13 @@
 {
   "name": "issue-tree-viewer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "dompurify": "^3.3.0",

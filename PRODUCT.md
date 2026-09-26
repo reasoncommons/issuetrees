@@ -1,18 +1,18 @@
 # Product
 <!-- impeccable:product-schema 1 -->
 ## Platform
-web
+Local web application with optional Node file server.
 ## Stack
-Delegated by the user: JavaScript usable from Node, with a local HTML prototype first.
+JavaScript, Vite, Markdown AST, DOMPurify; static browser mode also supported.
 ## Users
-Rufus and Life Itself collaborators reading project issue trees currently maintained as Markdown bullet lists.
+Rufus and Life Itself collaborators working with project issue trees in Markdown.
 ## Product Purpose
-See the shape of an inquiry, explore branches, and read answers without losing context.
+See the structure of an inquiry and edit its questions, answers, and branches without abandoning Markdown.
 ## Capabilities and Constraints
-Read-only viewer. Markdown remains authoritative. Existing bold checkmark answers must work. Answers appear below questions and long answers expand. Editing and Obsidian integration are future decisions.
+Compact bilateral map and outline. Edit, add, delete, reparent, reorder, undo/redo. Explicit Save back to the opened file with optimistic conflict detection; no live synchronization. Preserve surrounding project context. Unsupported Markdown structures remain read-only or edits are rejected without losing drafts.
 ## Brand Commitments
-Coggle is the explicit reference: friendly spatial layout and easy exploration. Obsidian Canvas is a possible future home.
+Coggle is the user-pinned visual reference: compact labels, pastel curved branches, plain canvas, quiet controls. Obsidian remains a later integration option.
 ## Evidence on Hand
-Life Itself rebrand project in the adjacent planning repository; tools/README.md records the original brief.
+Life Itself rebrand sample; actual Coggle reference; desktop/mobile screenshots and browser save/reopen/conflict checks.
 ## Product Principles
-Preserve reasoning and source links. Distinguish answers without guessing semantic status. Keep the map useful at multiple levels of detail.
+Markdown remains durable context. Preserve reasoning and links. Separate question and answer without inferring status. Keep editing deliberate and recoverable.
