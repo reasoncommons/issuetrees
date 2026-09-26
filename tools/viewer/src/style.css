@@ -587,3 +587,109 @@ code {
   padding: 0;
   color: inherit;
 }
+
+/* The draft occupies the label itself, in both map and outline. */
+#editor {
+  position: static;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+.node.editing {
+  width: 240px;
+  z-index: 3;
+}
+#editor textarea {
+  display: block;
+  width: 100%;
+  min-height: 20px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: inherit;
+  font:
+    400 13px/1.32 "Helvetica Neue",
+    Arial,
+    sans-serif;
+  box-shadow: none;
+}
+#editor textarea:focus {
+  outline: none;
+}
+#editor textarea:focus-visible {
+  box-shadow: 0 1px 0 var(--ink, #42464a);
+}
+#editor #answer {
+  font-size: 12px;
+  font-weight: 650;
+  margin-top: 4px;
+}
+#editor textarea::placeholder {
+  color: #61696b;
+  opacity: 1;
+  font-weight: 400;
+}
+#editor .inline-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 7px;
+  gap: 3px;
+}
+#editor button {
+  font-size: 10px;
+  padding: 4px 6px;
+}
+#editor #close-editor {
+  font-weight: 650;
+}
+#editor .structure {
+  border: 0;
+  margin: 0;
+  padding: 3px 0 0;
+  font:
+    11px/1.4 "Helvetica Neue",
+    Arial,
+    sans-serif;
+}
+#editor summary {
+  cursor: pointer;
+  color: #535b60;
+  padding: 3px 0;
+}
+#editor .branch-actions {
+  padding: 6px 0 0;
+}
+#editor label {
+  font-size: 10px;
+  margin: 5px 0 2px;
+}
+#editor select {
+  width: 100%;
+  font-size: 11px;
+  margin: 0;
+}
+#outline #editor {
+  max-width: 520px;
+}
+#outline #editor textarea {
+  font-size: 14px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

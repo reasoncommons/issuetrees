@@ -58,44 +58,56 @@
         </div>
       </div>
       <div id="outline" hidden></div>
-      <aside id="editor" hidden aria-label="Edit selected question">
-        <div class="panel-heading">
-          <h2>Edit question</h2>
-          <button id="close-editor" aria-label="Close editor">×</button>
-        </div>
+      <div id="editor" hidden aria-label="Edit selected question in place">
         <form id="node-form">
-          <label for="question">Question</label
-          ><textarea id="question" rows="3" required></textarea>
+          <textarea
+            id="question"
+            rows="1"
+            required
+            aria-label="Question"
+            placeholder="Write a question…"
+          ></textarea>
           <div id="answer-fields">
-            <label for="answer"
-              >Answer <span>optional · Markdown supported</span></label
-            ><textarea
+            <textarea
               id="answer"
-              rows="4"
-              placeholder="What do we know?"
+              rows="1"
+              aria-label="Answer"
+              placeholder="+ Add an answer…"
             ></textarea>
           </div>
-          <div class="form-actions">
-            <button type="submit" class="apply">Apply</button
-            ><button type="button" id="cancel-edit">Cancel</button>
-            <span id="draft-state"></span>
+          <div class="inline-actions">
+            <button
+              type="submit"
+              id="close-editor"
+              title="Finish editing (Enter)"
+            >
+              Done
+            </button>
+            <button
+              type="button"
+              id="cancel-edit"
+              title="Discard draft (Escape)"
+            >
+              Cancel
+            </button>
+            <span id="draft-state" class="sr-only"></span>
           </div>
         </form>
-        <div class="structure">
-          <button id="add-child">+ Child question</button
-          ><button id="add-sibling">+ Sibling</button
-          ><label for="parent">Move to branch</label
-          ><select id="parent"></select>
-          <div class="row">
-            <button id="move-up">Move up</button
-            ><button id="move-down">Move down</button
-            ><button id="delete" class="danger">Delete branch</button>
+        <details class="structure">
+          <summary>Branch actions</summary>
+          <div class="branch-actions">
+            <button id="add-child">+ Child</button
+            ><button id="add-sibling">+ Sibling</button>
+            <label for="parent">Move to branch</label
+            ><select id="parent"></select>
+            <div class="row">
+              <button id="move-up">Move up</button
+              ><button id="move-down">Move down</button
+              ><button id="delete" class="danger">Delete</button>
+            </div>
           </div>
-          <p class="subtle">
-            Changes stay here until you Save. Deletions can be undone.
-          </p>
-        </div>
-      </aside>
+        </details>
+      </div>
       <section id="import" class="sheet" hidden>
         <div class="panel-heading">
           <h2>Paste Markdown</h2>

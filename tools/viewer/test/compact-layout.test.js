@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { layoutTree } from "../src/layout.js";
-test("compact layout uses both sides and content widths without overlaps", () => {
+test("compact layout always flows right with content widths and no overlaps", () => {
   const root = {
     id: "root",
     children: [
@@ -18,7 +18,7 @@ test("compact layout uses both sides and content widths without overlaps", () =>
     ["c", { width: 90, height: 30 }],
   ]);
   const r = layoutTree(root, sizes);
-  assert.ok(r.nodes.some((n) => n.side === -1));
+  for (const { from, to } of r.edges) assert.ok(to.x > from.x + from.width);
   assert.ok(r.nodes.some((n) => n.side === 1));
   assert.equal(r.nodes.find((n) => n.id === "c").width, 90);
   for (let i = 0; i < r.nodes.length; i++)
@@ -58,4 +58,22 @@ test("an expanded branch keeps the root branches on their original sides", () =>
     next.nodes.filter((n) => n.id !== "root").map((n) => [n.id, n.side]),
     prior,
   );
+});
+
+test("stale bilateral preferences cannot put branches on the left", () => {
+  const root = {
+    id: "root",
+    children: [
+      { id: "a", children: [] },
+      { id: "b", children: [] },
+    ],
+  };
+  const r = layoutTree(root, new Map(), {
+    bilateral: true,
+    sides: new Map([
+      ["a", 1],
+      ["b", 1],
+    ]),
+  });
+  for (const { from, to } of r.edges) assert.ok(to.x > from.x + from.width);
 });

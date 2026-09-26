@@ -9,7 +9,7 @@ Rufus and Life Itself collaborators working with project issue trees in Markdown
 ## Product Purpose
 See the structure of an inquiry and edit its questions, answers, and branches without abandoning Markdown.
 ## Capabilities and Constraints
-Compact bilateral map and outline. Edit, add, delete, reparent, reorder, undo/redo. Explicit Save back to the opened file with optimistic conflict detection; no live synchronization. Preserve surrounding project context. Unsupported Markdown structures remain read-only or edits are rejected without losing drafts.
+Compact right-flow map and outline with editing in place. Edit, add, delete, reparent, reorder, undo/redo. Explicit Save back to the opened file with optimistic conflict detection; no live synchronization. Preserve surrounding project context. Unsupported Markdown structures remain read-only or edits are rejected without losing drafts.
 ## Brand Commitments
 Coggle is the user-pinned visual reference: compact labels, pastel curved branches, plain canvas, quiet controls. Obsidian remains a later integration option.
 ## Evidence on Hand

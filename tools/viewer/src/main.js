@@ -25,7 +25,6 @@ const $ = (s) => document.querySelector(s),
     ["#b9c977", "#596731"],
   ];
 let generation = 0;
-let sides = new Map();
 let doc,
   target = null,
   selected = null,
@@ -42,7 +41,8 @@ let doc,
   saving = false,
   baseUrl = "";
 const viewport = $("#viewport"),
-  world = $("#world");
+  world = $("#world"),
+  editor = $("#editor");
 const clone = (x) => structuredClone(x);
 const dirty = () => JSON.stringify(doc.tree) !== savedTree;
 function notice(message) {
@@ -147,8 +147,8 @@ function transact(action, anchor = selected) {
     if (undo.length > 60) undo.shift();
     redo = [];
     notice("");
-    render(anchor);
     syncPanel();
+    render(anchor);
     updateStatus();
     return true;
   } catch (e) {
@@ -182,8 +182,7 @@ function syncPanel() {
   $("#question").value = n.id === "root" ? n.title : n.question;
   $("#answer").value = n.answer || "";
   $("#answer-fields").hidden = n.id === "root";
-  $("#editor h2").textContent =
-    n.id === "root" ? "Edit root question" : "Edit question";
+  editor.querySelector("details").open = false;
   const forbidden = new Set(flatten(n).map((c) => c.id));
   $("#parent").replaceChildren();
   for (const p of flatten(doc.tree)) {
@@ -201,32 +200,49 @@ function syncPanel() {
     $("#" + id).disabled = n.id === "root";
   $("#draft-state").textContent = "";
 }
-function selectNode(id) {
-  if (saving) return;
+function selectNode(id, field = "question") {
+  if (saving || (selected === id && !editor.hidden)) return;
   if (!applyDraft()) return;
   if (doc.readOnlyReason) {
     notice(doc.readOnlyReason);
     return;
   }
   selected = id;
-  render();
   syncPanel();
+  render(id);
   if (view === "map") {
-    const node = $("#nodes").querySelector(`[data-id="${id}"]`),
-      rect = node?.getBoundingClientRect(),
-      panel = $("#editor").getBoundingClientRect();
-    if (
-      rect &&
-      rect.right > panel.left - 24 &&
-      rect.bottom > panel.top &&
-      rect.top < panel.bottom
-    ) {
-      tx -= rect.right - (panel.left - 24);
-      transform();
-    }
+    // Text editing should happen at a readable scale, even from an overview.
+    if (scale < 0.9) zoom(1 / scale);
+    const rect = editor.getBoundingClientRect(),
+      bounds = viewport.getBoundingClientRect();
+    tx +=
+      Math.max(0, bounds.left + 24 - rect.left) -
+      Math.max(0, rect.right - bounds.right + 24);
+    ty +=
+      Math.max(0, bounds.top + 24 - rect.top) -
+      Math.max(0, rect.bottom - bounds.bottom + 60);
+    transform();
   }
-  $("#question").focus({ preventScroll: true });
+  $("#" + (id === "root" ? "question" : field)).focus({
+    preventScroll: view === "map",
+  });
   updateStatus();
+}
+function finishEditing() {
+  if (!applyDraft()) return;
+  const id = selected;
+  selected = null;
+  editor.hidden = true;
+  render(id);
+  const scope = view === "map" ? $("#nodes") : $("#outline");
+  scope.querySelector(`[data-id="${id}"]`)?.focus({ preventScroll: true });
+  updateStatus();
+}
+function sizeDraft() {
+  for (const field of editor.querySelectorAll("textarea")) {
+    field.style.height = "0px";
+    field.style.height = Math.max(20, field.scrollHeight) + "px";
+  }
 }
 function content(n) {
   const el = document.createElement("div");
@@ -272,6 +288,15 @@ function visible(n) {
 function render(anchor) {
   const before = layout?.nodes.find((n) => n.id === anchor);
   const scroll = $("#outline").scrollTop;
+  const focused = editor.contains(document.activeElement)
+    ? document.activeElement
+    : null;
+  const range =
+    focused?.tagName === "TEXTAREA"
+      ? [focused.selectionStart, focused.selectionEnd]
+      : null;
+  // Keep the actual draft elements alive while rebuilding the surrounding map.
+  document.querySelector("main").append(editor);
   $("#nodes").replaceChildren();
   const nodes = new Map(flatten(doc.tree).map((n) => [n.id, n])),
     shown = visible(doc.tree),
@@ -290,9 +315,13 @@ function render(anchor) {
     el.setAttribute("aria-label", "Edit: " + plainLabel(actual));
     el.style.setProperty("--branch", palette[branch % palette.length][0]);
     el.style.setProperty("--ink", palette[branch % palette.length][1]);
-    el.append(content(actual));
+    if (selected === n.id && view === "map" && !editor.hidden) {
+      el.classList.add("editing");
+      el.append(editor);
+    } else el.append(content(actual));
     el.onclick = (e) => {
-      if (!e.target.closest("a,button")) selectNode(n.id);
+      if (!e.target.closest("a,button,#editor"))
+        selectNode(n.id, e.target.closest(".answer") ? "answer" : "question");
     };
     el.onkeydown = (e) => {
       if (e.target !== el) return;
@@ -315,6 +344,10 @@ function render(anchor) {
       b.setAttribute("aria-expanded", !collapsed.has(n.id));
       b.onclick = (e) => {
         e.stopPropagation();
+        if (selected) {
+          finishEditing();
+          if (selected) return;
+        }
         collapsed.has(n.id) ? collapsed.delete(n.id) : collapsed.add(n.id);
         render(n.id);
         $("#nodes")
@@ -324,13 +357,14 @@ function render(anchor) {
       el.append(b);
     }
     $("#nodes").append(el);
+    if (el.contains(editor)) sizeDraft();
     measureAnswers(el);
     sizes.set(n.id, { width: el.offsetWidth, height: el.offsetHeight });
     elements.set(n.id, el);
     n.children.forEach((c, i) => mount(c, n.id === "root" ? i : branch));
   }
   mount(shown);
-  layout = layoutTree(shown, sizes, { sides });
+  layout = layoutTree(shown, sizes);
   for (const n of layout.nodes) {
     const el = elements.get(n.id);
     el.style.left = n.x + "px";
@@ -371,6 +405,10 @@ function render(anchor) {
   transform();
   renderOutline();
   $("#outline").scrollTop = scroll;
+  if (focused && !editor.hidden) {
+    focused.focus({ preventScroll: true });
+    if (range) focused.setSelectionRange(...range);
+  }
 }
 function renderOutline() {
   const out = $("#outline");
@@ -379,7 +417,11 @@ function renderOutline() {
   const rootButton = document.createElement("button");
   rootButton.textContent = doc.tree.title;
   rootButton.onclick = () => selectNode("root");
-  heading.append(rootButton);
+  heading.dataset.id = "root";
+  heading.tabIndex = -1;
+  if (selected === "root" && view === "outline" && !editor.hidden)
+    heading.append(editor);
+  else heading.append(rootButton);
   out.append(heading);
   function list(nodes) {
     const ul = document.createElement("ul");
@@ -389,20 +431,31 @@ function renderOutline() {
       li.style.setProperty("--branch", palette[i % palette.length][0]);
       if (n.id === selected) li.classList.add("selected");
       const inner = content(n);
+      const answer = inner.querySelector(".answer");
+      if (answer)
+        answer.onclick = (e) => {
+          if (!e.target.closest("a,button")) selectNode(n.id, "answer");
+        };
       const question = inner.querySelector(".question");
       const b = document.createElement("button");
       b.className = "outline-question";
       b.append(...question.childNodes);
       b.onclick = () => selectNode(n.id);
       question.replaceWith(b);
-      li.append(inner);
+      li.tabIndex = -1;
+      if (selected === n.id && view === "outline" && !editor.hidden)
+        li.append(editor);
+      else li.append(inner);
       if (n.children.length) li.append(list(n.children));
       ul.append(li);
     });
     return ul;
   }
   out.append(list(doc.tree.children));
-  if (view === "outline") measureAnswers(out);
+  if (view === "outline") {
+    sizeDraft();
+    measureAnswers(out);
+  }
 }
 function transform() {
   world.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
@@ -420,7 +473,10 @@ function fit() {
   transform();
 }
 function setView(next) {
-  if (!applyDraft()) return;
+  if (selected) {
+    finishEditing();
+    if (selected) return;
+  }
   view = next;
   viewport.hidden = view !== "map";
   $("#outline").hidden = view !== "outline";
@@ -443,7 +499,6 @@ function load(source, name, newTarget = null, isSample = false) {
   const next = openDocument(source);
   doc = next;
   generation++;
-  sides = new Map();
   target = newTarget;
   selected = null;
   undo = [];
@@ -542,8 +597,8 @@ async function save() {
     }
     doc = rebaseDocument(doc, content);
     savedTree = JSON.stringify(doc.tree);
-    render(selected);
     syncPanel();
+    render(selected);
     notice("Saved.");
   } catch (e) {
     if (e.name !== "AbortError") notice(e.message);
@@ -554,16 +609,31 @@ async function save() {
 }
 $("#node-form").onsubmit = (e) => {
   e.preventDefault();
-  applyDraft();
+  finishEditing();
 };
-$("#question").oninput = $("#answer").oninput = updateStatus;
-$("#close-editor").onclick = () => {
-  if (!applyDraft()) return;
-  selected = null;
-  $("#editor").hidden = true;
-  render();
+$("#question").oninput = $("#answer").oninput = (e) => {
+  if (!e.isComposing) render(selected);
   updateStatus();
 };
+editor.addEventListener("compositionend", () => {
+  render(selected);
+  updateStatus();
+});
+editor.addEventListener("keydown", (e) => {
+  if (e.isComposing) return;
+  if (e.key === "Escape") {
+    e.preventDefault();
+    $("#cancel-edit").click();
+  }
+  if (e.key === "Enter" && !e.shiftKey && e.target.tagName === "TEXTAREA") {
+    e.preventDefault();
+    e.stopPropagation();
+    finishEditing();
+  }
+});
+editor.querySelector("details").addEventListener("toggle", () => {
+  if (!editor.hidden) render(selected);
+});
 $("#add-child").onclick = () => {
   if (!applyDraft()) return;
   let newId;
@@ -636,8 +706,8 @@ function history(direction) {
   to.push(clone(doc.tree));
   doc.tree = from.pop();
   if (selected && !findNode(doc.tree, selected)) selected = null;
-  render();
   syncPanel();
+  render();
   updateStatus();
 }
 $("#undo").onclick = () => history("undo");
@@ -688,6 +758,10 @@ $("#map-view").onclick = () => setView("map");
 $("#outline-view").onclick = () => setView("outline");
 $("#fit").onclick = fit;
 $("#overview").onclick = () => {
+  if (selected) {
+    finishEditing();
+    if (selected) return;
+  }
   resetDepth(1);
   render();
   fit();
@@ -713,6 +787,10 @@ $("#zoom-out").onclick = () => zoom(1 / 1.2);
 let drag = null;
 viewport.onpointerdown = (e) => {
   if (e.target.closest(".node")) return;
+  if (selected) {
+    finishEditing();
+    if (selected) return;
+  }
   drag = { x: e.clientX, y: e.clientY, tx, ty };
   viewport.setPointerCapture(e.pointerId);
 };
@@ -775,7 +853,7 @@ window.addEventListener("keydown", (e) => {
     e.target.closest("#editor")
   ) {
     e.preventDefault();
-    applyDraft();
+    finishEditing();
   }
 });
 window.addEventListener("beforeunload", (e) => {

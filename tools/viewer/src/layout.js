@@ -1,9 +1,5 @@
-/** Compact bilateral tree. Labels supply their own measured width and height. */
-export function layoutTree(
-  root,
-  sizes,
-  { gapX = 42, gapY = 14, bilateral = true, sides = new Map() } = {},
-) {
+/** Compact right-flow tree. Labels supply their own measured width and height. */
+export function layoutTree(root, sizes, { gapX = 42, gapY = 14 } = {}) {
   const dimensions = (n) => {
     const s = sizes.get(n.id);
     return typeof s === "number"
@@ -36,12 +32,7 @@ export function layoutTree(
   const groups = [[], []];
   let totals = [0, 0];
   root.children.forEach((n, i) => {
-    const g = sides.has(n.id)
-      ? sides.get(n.id)
-      : bilateral && totals[0] > totals[1]
-        ? 1
-        : 0;
-    sides.set(n.id, g);
+    const g = 0;
     groups[g].push({ n, branch: i });
     totals[g] += spans.get(n.id) + gapY;
   });

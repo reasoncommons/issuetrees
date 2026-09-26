@@ -1,6 +1,6 @@
 # Issue Tree Viewer
 
-A local Markdown issue-tree editor with a compact, bilateral Coggle-style map. Edit questions and answers, add or move branches, then explicitly save back to Markdown. A readable outline is the default on small screens.
+A local Markdown issue-tree editor with a compact, right-flow Coggle-style map. Edit questions and answers, add or move branches, then explicitly save back to Markdown. A readable outline is the default on small screens.
 
 ## Run
 
@@ -39,12 +39,12 @@ Only a bold span beginning with `✅` marks an answer. Questions, answers, trail
 
 ## Controls and saving
 
-- Click a question to edit its question and answer. Apply changes to the map; Cancel discards the current draft. Save writes the document, including an applied valid draft.
-- Add a child or sibling, select a different parent, reorder siblings, or delete a subtree. Undo/redo includes structural changes and remains available after saving.
+- Click a question or answer to edit directly where it appears. Enter or Done finishes; Shift-Enter adds a newline; Escape or Cancel discards the draft. Clicking another node applies the draft locally. Save writes the document, including a valid active draft.
+- Open Branch actions on the edited node to add a child or sibling, select a different parent, reorder siblings, or delete a subtree. Undo/redo includes structural changes and remains available after saving.
 - Save checks whether the file changed externally since opening or the last save. On conflict it refuses the write and retains your edits; download them or reopen the changed source. There is no live sync or file watcher.
 - Scroll to zoom; Shift-scroll or drag empty space to pan. Use Fit, Collapse, Expand, and the zoom controls to navigate.
 - Expand long answers separately from branches. Select Outline for linear reading.
-- Keyboard: arrow keys pan the focused map; plus/minus zoom; Cmd/Ctrl-S saves; Cmd/Ctrl-Z undoes outside text fields; Cmd/Ctrl-Enter applies a draft.
+- Keyboard: arrow keys pan the focused map; plus/minus zoom; Cmd/Ctrl-S saves; Cmd/Ctrl-Z undoes outside text fields; Cmd/Ctrl-Enter finishes a draft.
 
 ## Markdown preservation
 
@@ -72,4 +72,4 @@ This prototype does not watch external changes, merge conflicts, export Obsidian
 
 ## Resume
 
-Current implementation: Beads `issuetrees-yx3`; initial viewer: `issuetrees-4mv`. Design and plan: `../../docs/plans/2026-09-26-coggle-editor*.md`. Visual direction: `../../DESIGN.md` and `design/moodboard.html`.
+Current interaction revision: Beads `issuetrees-g5g`; explicit-save implementation: `issuetrees-yx3`; initial viewer: `issuetrees-4mv`. Design and plan: `../../docs/plans/2026-09-26-coggle-editor*.md`. Visual direction: `../../DESIGN.md` and `design/moodboard.html`.

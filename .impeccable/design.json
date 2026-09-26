@@ -2,11 +2,12 @@
   "schemaVersion": 2,
   "title": "Issue trees \u2014 Coggle-style editor",
   "narrative": {
-    "overview": "Compact bilateral Markdown map using the user-pinned Coggle visual reference.",
+    "overview": "Compact right-flow Markdown map using the user-pinned Coggle visual reference.",
     "keyCharacteristics": [
       "Measured labels",
       "Pastel branch baselines",
       "Inline bold answers",
+      "Edit text in place",
       "Explicit save"
     ]
   },
