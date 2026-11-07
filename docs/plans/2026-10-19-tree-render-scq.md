@@ -1,5 +1,7 @@
 # Rendering trees beautifully — SCQ
 
+Moved 2026-11-07: this work now lives in [reasoncommons/tree-render](https://github.com/reasoncommons/tree-render) (SCQ, LTP draft, tree-mindmap skill). This copy is kept for history.
+
 Status: signed off 2026-10-19 by Rufus ("question is good… go to the LTP directly rather than build out the issue tree more")
 Source: conversation in Rufus's planning repo, building on `~/src/rufuspollock/planning/projects/2026-shareable-tree-visuals/` (problem definition, research, critiques and trials, 2026-10-17 to 19) and the draft `tree-mindmap` skill (`~/src/life-itself/skills/skills/tree-mindmap/`)
 
