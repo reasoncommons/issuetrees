@@ -29,4 +29,4 @@ If Beads reports that the database is not initialized, verify that `.beads/confi
 
 ## If sync fails
 
-Inspect `bd context`, `bd dolt remote list`, `bd dolt status`, and `git status --short --branch` before changing state. Retry `git pull`, `bd dolt pull`, then `bd dolt push`. If both clones changed Beads concurrently, resolve the Dolt conflict without deleting `.beads/` or reinitializing. See the beads-sync-playbook in `~/src/rufuspollock/agent-skills` for recovery guidance.
+Inspect `bd context`, `bd dolt remote list`, `bd dolt status`, and `git status --short --branch` before changing state. Retry `git pull`, `bd dolt pull`, then `bd dolt push`. If both clones changed Beads concurrently, resolve the Dolt conflict without deleting `.beads/` or reinitializing. See the beads-sync-playbook in `~/src/rufuspollock/skills` for recovery guidance.
